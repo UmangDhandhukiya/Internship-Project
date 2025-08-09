@@ -4,7 +4,7 @@ import { plantCareItems } from '../utills/data';
 const PlantCare = () => {
   return (
     <div className="h-full p-10 flex flex-col gap-4">
-      <h1 className="text-4xl font-light">Most-Popular Plants</h1>
+      <h1 className="text-4xl font-light">Plant Care Items</h1>
       <div className="flex flex-wrap justify-center gap-6">
         {plantCareItems.map((item, index) => (
           <div

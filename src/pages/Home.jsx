@@ -11,7 +11,7 @@ const Home = () => {
         </p>
         <div className="flex justify-between items-center gap-6">
           <button className="px-2 py-3 bg-emerald-700 text-white font-light">
-            Shp the Pickle Plant
+            Shop the Pickle Plant
           </button>
           <button className="px-2 py-3 text-emerald-700 font-light hover:bg-emerald-200">
             Shop Beginner-Friendly Plant

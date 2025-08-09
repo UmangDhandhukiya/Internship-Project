@@ -1,79 +1,89 @@
-"use client"
-import { ArrowLeft, ShoppingCart, Clock, Droplets } from "lucide-react"
+import React, { useEffect, useState } from "react";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
 
-const ProductDetail = ({ plant, onBack, onAddToCart }) => {
+const API_KEY = import.meta.env.VITE_PERENUAL_API_KEY;
+
+const ProductDetail = () => {
+  const { state } = useLocation();
+  const plantFromState = state?.plant || null;
+
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+
+  const [plant, setPlant] = useState(plantFromState || null);
+  const [loading, setLoading] = useState(!plantFromState);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!plantFromState && id) {
+      setLoading(true);
+      fetch(`https://perenual.com/api/v2/species/details/${id}?key=${API_KEY}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setPlant({
+            id: data.id,
+            name: data.common_name,
+            desc: data.scientific_name?.[0] || "No description available",
+            price: Math.floor(Math.random() * 2000) + 500,
+            image: data.default_image?.regular_url || "/placeholder.svg",
+            details: data.description || "No additional details available.",
+          });
+        })
+        .catch(() => setError("Failed to load plant details."))
+        .finally(() => setLoading(false));
+    }
+  }, [id, plantFromState]);
+
+  if (loading) return <p className="p-10 text-lg animate-pulse">Loading product details...</p>;
+  if (error) return <p className="p-10 text-red-500">{error}</p>;
+  if (!plant) return <p className="p-10">No plant details found.</p>;
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Back Button */}
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Plants
-        </button>
+    <div className="p-6 md:p-12 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden flex flex-col md:flex-row">
+        
+        {/* Product Image */}
+        <div className="md:w-1/2 flex justify-center items-center bg-gray-100 p-6">
+          <img
+            src={plant.image}
+            alt={plant.name}
+            className="rounded-lg shadow-md max-h-[450px] object-cover"
+          />
+        </div>
 
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Product Image */}
-            <div className="p-6">
-              <img
-                src={plant.image_url || "/placeholder.svg"}
-                alt={plant.common_name}
-                className="w-full h-96 md:h-[500px] object-cover rounded-lg"
-              />
-            </div>
-
-            {/* Product Information */}
-            <div className="p-6 flex flex-col justify-between">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-light text-gray-800 mb-4">{plant.common_name}</h1>
-
-                <p className="text-gray-600 text-lg mb-6 leading-relaxed">{plant.description}</p>
-
-                {/* Price */}
-                <div className="mb-6">
-                  <span className="text-3xl font-semibold text-green-600">₹{plant.price_inr.toLocaleString()}</span>
-                </div>
-
-                {/* Time to Grow */}
-                <div className="flex items-center gap-2 mb-6 text-gray-600">
-                  <Clock className="w-5 h-5" />
-                  <span>Time to grow: {plant.time_to_grow}</span>
-                </div>
-
-                {/* Add to Cart Button */}
-                <button
-                  onClick={() => onAddToCart(plant)}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 mb-8"
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  Add to Cart
-                </button>
-              </div>
+        {/* Product Info */}
+        <div className="md:w-1/2 p-6 flex flex-col justify-between">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-800">{plant.name}</h1>
+            <p className="text-green-600 font-medium mt-2">{plant.desc}</p>
+            <p className="mt-4 text-gray-600 leading-relaxed">{plant.details}</p>
+            <div className="mt-6 border-t border-gray-200 pt-4">
+              <p className="text-2xl font-semibold text-gray-900">₹{plant.price}</p>
             </div>
           </div>
 
-          {/* Care Tips Section */}
-          <div className="border-t border-gray-200 p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Droplets className="w-6 h-6 text-green-600" />
-              <h2 className="text-2xl font-light text-gray-800">Care Tips</h2>
-            </div>
-            <div className="grid md:grid-cols-2 gap-4">
-              {plant.care_tips.map((tip, index) => (
-                <div key={index} className="flex items-start gap-3 p-4 bg-green-50 rounded-lg">
-                  <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <p className="text-gray-700">{tip}</p>
-                </div>
-              ))}
-            </div>
+          {/* Action Buttons */}
+          <div className="mt-6 flex gap-4">
+            <button
+              onClick={() => addToCart(plant)}
+              className="flex-1 bg-green-600 text-white py-3 rounded-lg text-lg font-medium shadow hover:bg-green-700 transition duration-300"
+            >
+              Add to Cart
+            </button>
+            <button
+              onClick={() => navigate(-1)}
+              className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg text-lg font-medium shadow hover:bg-gray-300 transition duration-300"
+            >
+              Back
+            </button>
           </div>
         </div>
+
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProductDetail
+export default ProductDetail;
