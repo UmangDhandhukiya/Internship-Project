@@ -1,6 +1,6 @@
 import { Heart, ShoppingBasket, UserRound } from "lucide-react";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Links } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -16,7 +16,7 @@ const Header = () => {
 
           <input
             className="border border-gray-200 hover:border-black w-1/2 h-[45px] px-6 py-2"
-            type="text"
+            type="text"n
             name="search"
             placeholder="Search for plant.."
           />
@@ -28,11 +28,10 @@ const Header = () => {
           </div>
         </div>
         <div className="h-[60px] flex justify-center items-center list-none gap-10 font-medium cursor-pointer">
-          <li>New Arrivals</li>
+          <Link to={"/New-Arrival"}>New-Arrival</Link>
           <Link to={"/Popular"}>Most-Popular</Link>
           <li>Outdoor&plant</li>
-          <li>Gifts</li>
-          <li>Plant Care</li>
+          <Link to={"/plant-Care"}>Plant Care</Link>
           <li className="text-red-500">Sell</li>
         </div>
         <div className="bg-emerald-700 h-[40px] text-white flex justify-center items-center font-medium cursor-pointer">

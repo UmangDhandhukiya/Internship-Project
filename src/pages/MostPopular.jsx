@@ -1,59 +1,31 @@
-import React from "react";
+"use client"
+import { data } from "../utills/data"
 
-const MostPopular = () => {
-  const data = [
-    {
-      image:
-        "//www.thesill.com/cdn/shop/files/the-sill_Medium-Olive-Tree_Medium_Isabella_Dusty-Rose_Variant_1_9a2349fa-ad88-4622-ac80-b76813907c9f.jpg?v=1750708944&width=416",
-      name: "Olive Tree",
-      desc: "Our Most Popular Plant",
-      price: "1200",
-    },
-    {
-      image:
-        "https://www.thesill.com/cdn/shop/files/the-sill_Medium-Mermaid-Cactus-Purple_Medium_Grant_Cream_Variant.jpg?v=1752687007&width=416",
-      name: "Mermaid Tail Cactus",
-      desc: "Rare Plant",
-      price: "2300",
-    },
-    {
-      image:
-        "https://www.thesill.com/cdn/shop/files/the-sill_Medium-Fairy-Castle-Cactus_Medium_Grant_Black_Variant.jpg?v=1752703035&width=416",
-      name: "Fairy Castle Cactus",
-      desc: "Premium Plant",
-      price: "2000",
-    },
-    {
-      image:
-        "https://www.thesill.com/cdn/shop/files/the-sill_Medium-African_Milk_Cactus_Medium_Grant_Cream_Variant.jpg?v=1752623296&width=416",
-      name: "African Milk Tree",
-      desc: "Our Most Popular Plant",
-      price: "2200",
-    },
-  ];
-
+const MostPopular = ({ onProductClick }) => {
   return (
-    <div className="h-full p-10 flex flex-col justify-between items-start">
-      <h1 className="text-4xl font-light">Our Most Popular Plants</h1>
-      <div className="h-auto flex gap-2 items-center">
-        {data.map((item, index) => {
-          return (
-            <div
-              className="flex flex-col justify-center items-star p-4 cursor-pointer"
-              key={index}
-            >
-              <img className="" src={item.image} alt="" />
-              <p className="text-2xl py-1">{item.name}</p>
-              <p className="text-sm font-light py-1">{item.desc}</p>
-              <p className="font-light py-1">
-                <b>From</b> ₹{item.price}
-              </p>
-            </div>
-          );
-        })}
+    <div className="h-full p-10 flex flex-col gap-4">
+      <h1 className="text-4xl font-light">Most-Popular Plants</h1>
+      <div className="flex flex-wrap justify-center gap-6">
+        {data.map((item, index) => (
+          <div
+            className="flex flex-col items-start p-4 cursor-pointer w-64 hover:shadow-lg transition-shadow duration-300 rounded-lg"
+            key={index}
+            onClick={() => onProductClick(item, index)}
+          >
+            <img
+              src={item.image_url || "/placeholder.svg"}
+              alt={item.common_name}
+              className="w-full h-64 object-cover rounded-lg"
+            />
+            <p className="text-xl py-1 font-medium">{item.common_name}</p>
+            <p className="font-light text-gray-700">
+              <b>From</b> ₹{item.price_inr.toLocaleString()}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MostPopular;
+export default MostPopular
